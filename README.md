@@ -1,4 +1,4 @@
-# SortingCompetitionMaterials2018
+# SortingCompetitionMaterials2019 (Preliminary)
 
 Materials for UMM CSci 3501 "Algorithms and computability" 2019 sorting competition.
 
