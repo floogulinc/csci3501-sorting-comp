@@ -51,7 +51,7 @@ The expression types are generated with the following frequencies:
 3. Approximately one fifth of the values will be pure fractions
 
 
-### decimal expressions
+### Decimal expressions
 
 The whole number portion of a decimal expression will be a value between 0 and 5 digits long.  The length will be uniformly distributed.  Except for the first digit in the expression, even valued digits will be twice as likely as odd valued digits.  For the first digit, all values between 1 and 9 will be equally likely.
 
@@ -71,7 +71,7 @@ The generated values are written into a data file one per line. Sample data file
 
 ## How do you need to sort the data <a name="sortingRules"></a>
 
-Sorting is done first by value.  If two expressions have the same value then the following rules are followed:
+Sorting is done first by numeric value.  If two expressions represent the same value then the following rules are followed:
 
 * Decimal expression
 * Mixed fraction
@@ -79,8 +79,7 @@ Sorting is done first by value.  If two expressions have the same value then the
 
 For mixed fractions and pure fractions it is possible to have different representation of the same number.  The conflicts are resolved as:
 
-**pure fractions:**  
-
+**Pure fractions:**  
 A pure fraction is always one number followed by a `/` and then a second number.  If two pure fractions represent the same value, then the one with the **smallest numerator** goes first.  Therefore the following are in order:
 
 ```
@@ -89,7 +88,7 @@ A pure fraction is always one number followed by a `/` and then a second number.
 32/20
 ```
 
-**mixed fraction:**
+**Mixed fraction:**
 first: The mixed fraction with the smallest while number goes first
 second: If the two whole numbers are the same then the one with the smallest numerator goes first (same as the *pure fraction rule*)
 
