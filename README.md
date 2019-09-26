@@ -67,7 +67,7 @@ The whole number will be between integers 1 to 9999999999 generated the same way
 
 ### The data files
 
-The generated values are written into a data file one per line. Sample data files are: [data1.txt](src/data1.txt) (1000 elements), [data2.txt](src/data2.txt) (1000 elements), and [src/data3.txt](data3.txt) (10000 elements). 
+The generated values are written into a data file one per line. Sample data files are: [data1.txt](src/data1.txt) (1000 elements), [data2.txt](src/data2.txt) (1000 elements), and [data3.txt](src/data3.txt) (10000 elements). 
 
 ## How do you need to sort the data <a name="sortingRules"></a>
 
@@ -103,7 +103,7 @@ Hence the following mixed fractions are in the proper order:
 
 The file [Group0.java](src/Group0.java) provides a Comparator that implements this comparison and provides some tests. Please consult it as needed. However, note that this not an optimized implementation, and you should think of a way to make it much faster. 
 
-Once the data is sorted, it is written out to the output file, also one number per line, in the increasing order (according to the comparison given above). The files [out1.txt](out1.txt), [out2.txt](out2.txt), and [out3.txt](out3.txt) have the results of sorting for the three given data files. 
+Once the data is sorted, it is written out to the output file, also one number per line, in the increasing order (according to the comparison given above). The files [out1.txt](src/out1.txt), [out2.txt](src/out2.txt), and [out3.txt](src/out3.txt) have the results of sorting for the three given data files. 
 
 ## Setup for sorting <a name="setup"></a>
 
