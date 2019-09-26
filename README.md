@@ -35,7 +35,7 @@ Data for this sorting competition consists of standard UTF-8 characters stored i
 0.1378
 ```
 
-A fraction need not be proper, nor must it be in lowest form.   For mixed fractions and pure fractions it is possible to have different representation of the same number.  The conflicts are resolved as:
+A fraction need not be proper, nor must it be in lowest form.   For mixed fractions and pure fractions it is possible to have different representation of the same number.  The conflicts are resolved as discussed below.
 
 # How is the data generated <a name="generating"></a>
 
@@ -71,7 +71,7 @@ The generated values are written into a data file one per line. Sample data file
 
 ## How do you need to sort the data <a name="sortingRules"></a>
 
-Sorting is done first by numeric value.  If two expressions represent the same value then the following rules are followed:
+Sorting is done first by numeric value.  If two expressions represent the same value then the form of the expression determines the relative order as follows:
 
 * Decimal expression
 * Mixed fraction
