@@ -35,7 +35,7 @@ Data for this sorting competition consists of standard UTF-8 characters stored i
 0.1378
 ```
 
-A fraction need not be proper, nor must it be in lowest form.   For mixed fractions and pure fractions it is possible to have different representation of the same number.  The conflicts are resolved as:
+A fraction need not be proper, nor must it be in lowest form.   For mixed fractions and pure fractions it is possible to have different representation of the same number.  The conflicts are resolved as discussed below.
 
 # How is the data generated <a name="generating"></a>
 
@@ -67,11 +67,11 @@ The whole number will be between integers 1 to 9999999999 generated the same way
 
 ### The data files
 
-The generated values are written into a data file one per line. Sample data files are: [data1.txt](data1.txt) (1000 elements), [data2.txt](data2.txt) (1000 elements), and [data3.txt](data3.txt) (10000 elements). 
+The generated values are written into a data file one per line. Sample data files are: [data1.txt](src/data1.txt) (1000 elements), [data2.txt](src/data2.txt) (1000 elements), and [data3.txt](src/data3.txt) (10000 elements). 
 
 ## How do you need to sort the data <a name="sortingRules"></a>
 
-Sorting is done first by numeric value.  If two expressions represent the same value then the following rules are followed:
+Sorting is done first by numeric value.  If two expressions represent the same value then the form of the expression determines the relative order as follows:
 
 * Decimal expression
 * Mixed fraction
@@ -103,7 +103,7 @@ Hence the following mixed fractions are in the proper order:
 
 The file [Group0.java](src/Group0.java) provides a Comparator that implements this comparison and provides some tests. Please consult it as needed. However, note that this not an optimized implementation, and you should think of a way to make it much faster. 
 
-Once the data is sorted, it is written out to the output file, also one number per line, in the increasing order (according to the comparison given above). The files [out1.txt](out1.txt), [out2.txt](out2.txt), and [out3.txt](out3.txt) have the results of sorting for the three given data files. 
+Once the data is sorted, it is written out to the output file, also one number per line, in the increasing order (according to the comparison given above). The files [out1.txt](src/out1.txt), [out2.txt](src/out2.txt), and [out3.txt](src/out3.txt) have the results of sorting for the three given data files. 
 
 ## Setup for sorting <a name="setup"></a>
 
