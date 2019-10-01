@@ -67,7 +67,7 @@ The whole number will be between integers 1 to 9999999999 generated the same way
 
 ### The data files
 
-The generated values are written into a data file one per line. Sample data files are: [data1.txt](src/data1.txt) (1000 elements), [data2.txt](src/data2.txt) (1000 elements), and [data3.txt](src/data3.txt) (10000 elements). 
+The generated values are written into a data file one per line. Sample data files are: [data1.txt](src/data1.txt) (1000 elements), [data2.txt](src/data2.txt) (1000 elements), and [data3.txt](src/data3.txt) (10000 elements). **NOTE:** The actual data files used in the competition will likely by between 100,000 and 1,000,000 elements.
 
 ## How do you need to sort the data <a name="sortingRules"></a>
 
