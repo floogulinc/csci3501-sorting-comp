@@ -11,8 +11,8 @@ Materials for UMM CSci 3501 "Algorithms and computability" 2019 sorting competit
 * [Submision deadlines](#deadlines)
 * [Scoring](#scoring)
 * [System specs](#specs)
-* [Results of the first preliminary round](#round1)
-* [Results of the final competition](#final)
+* [Results of the first preliminary round](#round1) (Will be added later)
+* [Results of the final competition](#final) (Will be added later)
 * [Presentations](#presentation)
 
 
