@@ -30,7 +30,7 @@ Data for this sorting competition consists of standard UTF-8 characters stored i
 ```
 4/5
 123 99/178
-0.1378
+137.63
 ```
 
 A fraction need not be proper, nor must it be in lowest form.   For mixed fractions and pure fractions it is possible to have different representation of the same number.  The conflicts are resolved as discussed below.
@@ -53,7 +53,7 @@ The expression types are generated with the following frequencies:
 
 The whole number portion of a decimal expression will be a value between 0 and 5 digits long.  The length will be uniformly distributed.  Except for the first digit in the expression, even valued digits will be twice as likely as odd valued digits.  For the first digit, all values between 1 and 9 will be equally likely.
 
-The decimal portion of the expression will be a value between 1 and 10 digits long.  The length will be unformly distributed.  In each position except for the last, even digits will be twice as likely as odd digits.  In the last position all digits from 1 to 9 are equally likely.
+The decimal portion of the expression will be a value between 1 and 10 digits long.  The length will be uniformly distributed.  In each position except for the last, even digits will be twice as likely as odd digits.  In the last position all digits from 1 to 9 are equally likely.
 
 ### Pure fraction
 
@@ -93,8 +93,8 @@ second: If the two whole numbers are the same then the one with the smallest num
 Hence the following mixed fractions are in the proper order:
 
 ```
-1 8/5
 1 6/10
+1 8/5
 2 3/5
 2 6/10
 ```
