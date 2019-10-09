@@ -43,7 +43,7 @@ public class Group7 {
         System.out.println(end - start);
         //}
 
-        // System.out.println(FracComparator.count1 + " " + FracComparator.count2 + " " + FracComparator.count3);
+        //System.out.println(FracComparator.count1 + " " + FracComparator.count2 + " " + FracComparator.count3);
 
                  // Report the results
         writeOutResult(sorted, outFileName);
@@ -101,9 +101,9 @@ public class Group7 {
     public static class FracComparator implements Comparator<Data> {
         //private static final BigInteger zero= new BigInteger("0"); 
 
-        /* public static long count1 = 0;
-        public static long count2 = 0;
-        public static long count3 = 0; */
+        //public static long count1 = 0;
+        //public static long count2 = 0;
+        //public static long count3 = 0; 
 
         
         @Override
@@ -111,15 +111,17 @@ public class Group7 {
 
             // This is much cheaper than the full precision check so we do it first
 
-            long approxDiff = s1.approx - s2.approx;
+            double approxDiff = s1.approx - s2.approx;
 
-            if(approxDiff < -1) { // About 1/3 of comparisons
-                return -1;
-            } else if (approxDiff > 1) { // About 1/3 of comparisons
+            if(approxDiff > 1) { // About 1/3 of comparisons
+                //count1++;
                 return 1;
+            } else if (approxDiff < -1) { // About 1/3 of comparisons
+                //count2++;
+                return -1;
             }
 
-            
+            //count3++;
             int cmp = (s1.bigNumerator.multiply(s2.denominator)).compareTo(s2.bigNumerator.multiply(s1.denominator));  // Compare a/b to c/d by finding ad-bc
         
             
@@ -162,7 +164,7 @@ public class Group7 {
         
         public String exprLine;         // The original string-- useful to outputting at the end.
 
-        public long approx;
+        public double approx;
         
         public Data(String line){
             int posSlash=-1;       // Assume no slash
@@ -180,11 +182,12 @@ public class Group7 {
                 if(posSpace!=-1){ // We found a slash *and* a space
                     type=1;   // Set to type mixed
                     whole=new BigInteger(exprLine.substring(0,posSpace));// Get everything before the space
+                    numerator=new BigInteger(exprLine.substring(posSpace+1,posSlash));// Get everything before the slash and after the space (if any)
                 } else {         // We found a slash *but* no space
                     type=2;  //Set to type pure fraction
+                    numerator=new BigInteger(exprLine.substring(0,posSlash));// Get everything before the slash
                     whole = BigInteger.ZERO; // Not really defined for pure fractions... but simplifies bigNumerator calculation below
                 }
-                numerator=new BigInteger(exprLine.substring(posSpace+1,posSlash));// Get everything before the slash and after the space (if any)
                 denominator=new BigInteger(exprLine.substring(posSlash+1));       // Get everything after the slash
             } else {
                 posDot=exprLine.indexOf("."); //Find the period (if any)
@@ -198,7 +201,9 @@ public class Group7 {
             }
             
             bigNumerator = (whole.multiply(denominator)).add(numerator);// Make the big numerator
-            approx = bigNumerator.longValue() / denominator.longValue();
+            //approx = bigNumerator.longValue() / denominator.longValue();
+            //approx = bigNumerator.divide(denominator).longValue();
+            approx = bigNumerator.doubleValue() / denominator.doubleValue();
 
         }
         

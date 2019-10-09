@@ -28,7 +28,7 @@ public class DataGenerator2019 {
 		//makeSet("data1.txt",1000);
 		//makeSet("data2.txt",1000);
 		//makeSet("data3.txt",10000);
-		makeSet("data4.txt",100000);
+		makeSet("data5.txt",10000000);
 		
 	}
 	
@@ -43,7 +43,7 @@ public class DataGenerator2019 {
 	}
 	// generate data and print it to a file:
 	
-	private static void generateData(int numElts, PrintWriter out) {
+	public static void generateData(int numElts, PrintWriter out) {
 		
 		// Elements are generated one-by-one
 		// And written to `out`
@@ -129,5 +129,94 @@ public class DataGenerator2019 {
 		out.println(exprLine);
 	}
 }
+}
+
+public static String[] generateDataArray(int numElts) {
+	
+	// Elements are generated one-by-one
+	// And written to `out`
+
+	String[] generated = new String[numElts];
+	
+	int type;
+	long numerator=0;
+	long denominator=0;
+	long whole=0;
+	long decimal=0;
+	int length=0;
+	int m;
+	boolean generatePair=false;
+	
+	String exprLine;
+	
+	for (int i = 0; i < numElts; ++i) {
+		// determine type:
+		//		if(i%10==0){System.out.print(".");}
+		if(generatePair){
+			type=0; //Make another pure fraction
+		} else {
+			type=rand.nextInt(4); // random int 0,1,2 or 3
+		}
+		
+		switch(type){
+			case 0: // Pure Fraction
+			if(generatePair){ //numerator and denominator already exist and are valid
+				m=rand.nextInt(99)+2; // 2<=m<99+2=101 so 2 <= m <= 100
+				numerator*=m;
+				denominator*=m;
+				generatePair=false;
+			} else {
+				numerator=nextLong();
+				denominator=nextLong();
+			}
+			if(rand.nextInt(10)==0){ //1 out of 10 chance to generate a "pair" next round
+			generatePair=true;
+		}
+		exprLine=Long.toString(numerator)+"/"+Long.toString(denominator);
+		break;
+		case 1: // Decimal Expression
+		length=rand.nextInt(6);
+		if(length==0){
+			whole=0;
+		} else{
+			whole=rand.nextInt(9)+1; // First digit [0,9) -> [1,10) = [1,9]
+			for(int j=2;j<=length;j++){
+				m=rand.nextInt(5); //Primitive value [0,4]
+				if(rand.nextInt(3)==0){ // 1 out of 3
+					m=2*m+1; // m is odd from 1 to 9
+				} else { // 2 out of 3 (aka twice as likely)
+					m=2*m; // m is even from 0 to 8
+				}
+				whole=whole*10+m; //add the digit
+			}
+		}
+		length=rand.nextInt(10)+1; // [0,11) -> [1,10]  1<=length<=10
+		decimal=0;
+		for(int k=1;k<length;k++){ //Generate all but last digit-- note it doesn't matter in what order we add the digits
+		m=rand.nextInt(5); //Primitive value [0,4]
+		if(rand.nextInt(3)==0){ // 1 out of 3
+			m=2*m+1; // m is odd from 1 to 9
+		} else { // 2 out of 3 (aka twice as likely)
+			m=2*m; // m is even from 0 to 8
+		}
+		decimal=decimal*10+m; //add the digit
+	}
+	decimal=10*decimal+rand.nextInt(9)+1; // [0,9)->[1,10)=[1,9] // Add last digit to end
+	exprLine=Long.toString(whole)+"."+Long.toString(decimal);
+	
+	break;
+	default: //Mixed Fraction
+	numerator=nextLong();
+	denominator=nextLong();
+	whole=nextLong();
+	exprLine=Long.toString(whole)+" "+Long.toString(numerator)+"/"+Long.toString(denominator);
+	break;
+}
+
+generated[i] = exprLine;
+
+}
+
+return generated;
 }
 }

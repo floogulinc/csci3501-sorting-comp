@@ -46,7 +46,7 @@ public class Group0 {
     // Note: you may change the return type of the method.
     // You would need to provide your own function that prints your sorted array to
     // a file in the exact same format that my program outputs
-    private static Data[] sort(String[] toSort) {
+    public static Data[] sort(String[] toSort) {
         Data[] toSortData = new Data[toSort.length];
         for (int i = 0; i < toSort.length; ++i) {
             toSortData[i] = new Data(toSort[i]);
@@ -103,7 +103,7 @@ public class Group0 {
             return(0); // This should never be reached
         }
     }
-    private static class Data {             
+    static class Data {             
         public BigInteger numerator;    // Arbitrary Precision for Numerator
         public BigInteger denominator;  // Arbitrary Precision for Denominator
         public BigInteger whole;        // Arbitrary Prection for whole number (not needed... but makes the Big Integer arithmetic easier)
