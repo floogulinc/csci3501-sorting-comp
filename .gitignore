@@ -13,3 +13,7 @@ build
 bin/
 *.class
 .vscode/
+
+testdata/
+
+*.hprof
