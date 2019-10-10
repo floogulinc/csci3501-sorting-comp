@@ -79,8 +79,7 @@ public class Group7 {
             } else if (approxDiff < -1) { // About 1/3 of comparisons
                 return -1;
             }
-
-            //count3++;
+            
             int cmp = (s1.bigNumerator.multiply(s2.denominator)).compareTo(s2.bigNumerator.multiply(s1.denominator));  // Compare a/b to c/d by finding ad-bc
         
             
