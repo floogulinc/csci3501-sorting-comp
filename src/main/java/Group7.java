@@ -1,23 +1,15 @@
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Scanner;
 import java.util.List;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class Group7 {
     public static void main(String[] args) throws InterruptedException, FileNotFoundException,IOException {
-        // testing the comparator:
-        //Data.test_Data(); // This MUST be commented out for your submission to the competition!
-        
-        //System.out.println("CPUS: " + Runtime.getRuntime().availableProcessors());
         
         if (args.length < 2) {
             System.out.println("Please run with two command line arguments: input and output file names");
@@ -32,7 +24,6 @@ public class Group7 {
         String [] toSort = data.clone();
         Data [] sorted = sort(toSort); // Warm up the VM
 
-        //for(int i=0;i<10;i++) {
         toSort = data.clone();
         Thread.sleep(10); //to let other things finish before timing; adds stability of runs
         
@@ -41,18 +32,9 @@ public class Group7 {
         long end = System.currentTimeMillis();   // End the timing
         
         System.out.println(end - start);
-        //}
-
-        //System.out.println(FracComparator.count1 + " " + FracComparator.count2 + " " + FracComparator.count3);
-
-                 // Report the results
+        
+        // Report the results
         writeOutResult(sorted, outFileName);
-    }
-    
-    private static void printArray(String[] Arr, int n) {
-        for(int i = 0; i < n; i++) {
-            System.out.println(Arr[i]);
-        }
     }
     
     // YOUR SORTING METHOD GOES HERE.
@@ -63,25 +45,9 @@ public class Group7 {
     // You would need to provide your own function that prints your sorted array to
     // a file in the exact same format that my program outputs
     public static Data[] sort(String[] toSort) {
-        /*         long start = System.currentTimeMillis();
-        Data[] toSortData = new Data[toSort.length];
-        System.out.println(System.currentTimeMillis() - start); 
-        start = System.currentTimeMillis();
-        for (int i = 0; i < toSort.length; ++i) {
-            toSortData[i] = new Data(toSort[i]);
-        }
-        System.out.println(System.currentTimeMillis() - start); 
-        start = System.currentTimeMillis();
-        Arrays.sort(toSortData, new FracComparator());
-        System.out.println(System.currentTimeMillis() - start); 
-        
-        */
-        
-        //Arrays.stream(toSort).map(Data::new)
         
         return Arrays.stream(toSort).map(Data::new).sorted(new FracComparator()).toArray(Data[]::new);
-        
-        //return toSortData;
+
     }
     
     private static String[] readData(String inFile) throws FileNotFoundException,IOException {
@@ -101,11 +67,6 @@ public class Group7 {
     public static class FracComparator implements Comparator<Data> {
         //private static final BigInteger zero= new BigInteger("0"); 
 
-        //public static long count1 = 0;
-        //public static long count2 = 0;
-        //public static long count3 = 0; 
-
-        
         @Override
         public int compare(Data s1, Data s2) {
 
@@ -114,10 +75,8 @@ public class Group7 {
             double approxDiff = s1.approx - s2.approx;
 
             if(approxDiff > 1) { // About 1/3 of comparisons
-                //count1++;
                 return 1;
             } else if (approxDiff < -1) { // About 1/3 of comparisons
-                //count2++;
                 return -1;
             }
 
@@ -125,7 +84,7 @@ public class Group7 {
             int cmp = (s1.bigNumerator.multiply(s2.denominator)).compareTo(s2.bigNumerator.multiply(s1.denominator));  // Compare a/b to c/d by finding ad-bc
         
             
-            if(cmp!=0) { // True for 99.96% of comparisons
+            if(cmp!=0) { // True for 99.96% of comparisons (from before approx added)
                 return(cmp);
             }
 
