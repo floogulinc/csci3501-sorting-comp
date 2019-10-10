@@ -74,7 +74,7 @@ public class Group0 {
         out.close();
     }
     
-    private static class FracComparator implements Comparator<Data> {
+    static class FracComparator implements Comparator<Data> {
         private static final BigInteger zero= new BigInteger("0"); 
         
         @Override

@@ -1,34 +1,48 @@
-import org.junit.Test;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 
 
 public class Group7SortTest {
-    @Test public void testSort100() {
-        String[] data = DataGenerator2019.generateDataArray(100);
+
+    public void testSort(int numElements) {
+        String[] data = DataGenerator2019.generateDataArray(numElements);
         String[] toSort1 = data.clone();
         String[] toSort2 = data.clone();
 
         String[] sorted1 = Arrays.stream(Group0.sort(toSort1)).map(x -> x.exprLine).toArray(String[]::new);
         String[] sorted2 = Arrays.stream(Group7.sort(toSort2)).map(x -> x.exprLine).toArray(String[]::new);
 
-        assertEquals(100, sorted2.length);
+        assertEquals(numElements, sorted2.length);
         assertTrue(Arrays.asList(sorted2).containsAll(Arrays.asList(data)));
         assertArrayEquals(sorted1, sorted2);
     }
+    @Test public void testSort100() {
+        testSort(100);
+    }
+
+    @Test public void testSort1000() {
+        testSort(1000);
+    }
 
     @Test public void testSort10000() {
-        String[] data = DataGenerator2019.generateDataArray(10000);
-        String[] toSort1 = data.clone();
-        String[] toSort2 = data.clone();
+        testSort(10000);
+    }
 
-        String[] sorted1 = Arrays.stream(Group0.sort(toSort1)).map(x -> x.exprLine).toArray(String[]::new);
-        String[] sorted2 = Arrays.stream(Group7.sort(toSort2)).map(x -> x.exprLine).toArray(String[]::new);
+    //@Test public void testSort100000() {
+    //    testSort(100000);
+    //}
 
-        assertEquals(10000, sorted2.length);
-        assertTrue(Arrays.asList(sorted2).containsAll(Arrays.asList(data)));
-        assertArrayEquals(sorted1, sorted2);
+    @RepeatedTest(value = 100, name = RepeatedTest.LONG_DISPLAY_NAME) 
+    public void testSort10000Multi() {
+        testSort(10000);
+    }
+
+    @RepeatedTest(value = 1000, name = RepeatedTest.LONG_DISPLAY_NAME) 
+    public void testSort1000Multi() {
+        testSort(1000);
     }
 }

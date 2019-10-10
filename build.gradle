@@ -26,7 +26,19 @@ dependencies {
     implementation 'com.google.guava:guava:28.0-jre'
 
     // Use JUnit test framework
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
+}
+
+test {
+    useJUnitPlatform()
+
+    systemProperties = [
+        'junit.jupiter.execution.parallel.enabled' : 'true',
+        'junit.jupiter.execution.parallel.mode.default' : 'concurrent',
+        'junit.jupiter.execution.parallel.mode.classes.default' : 'concurrent'
+    ]
+
 }
 
 sourceCompatibility = 1.8
