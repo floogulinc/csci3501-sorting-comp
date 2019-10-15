@@ -28,8 +28,8 @@ public class DataGenerator2019 {
         //makeSet("data1.txt",1000);
         //makeSet("data2.txt",1000);
         //makeSet("data3.txt",10000);
-        makeSet("data5.txt",10000000);
-        
+        //makeSet("data5.txt",10000000);
+        makeSet(args[0], Integer.parseInt(args[1]));
     }
     
     private static void makeSet(String outFileName, int n) throws FileNotFoundException,IOException {
@@ -123,11 +123,16 @@ public class DataGenerator2019 {
         break;
     }
     
-    if (out == null) { // no file specified, so print to standard output
-        System.out.println(exprLine);
-    } else { // print to the print writer:
-        out.println(exprLine);
+    if(exprLine.contains("-")) { // Ignore negatives
+        i--;
+    } else {
+        if (out == null) { // no file specified, so print to standard output
+            System.out.println(exprLine);
+        } else { // print to the print writer:
+            out.println(exprLine);
+        }
     }
+    
 }
 }
 
