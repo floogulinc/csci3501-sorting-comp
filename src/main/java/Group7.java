@@ -87,10 +87,10 @@ public class Group7 {
 
             double approxDiff = s1.approx - s2.approx;
 
-            if(approxDiff > 1) { // About 1/3 of comparisons
+            if(approxDiff > 0.00000001) { // About 1/2 of comparisons
                 count[0]++;
                 return 1;
-            } else if (approxDiff < -1) { // About 1/3 of comparisons
+            } else if (approxDiff < -0.00000001) { // About 1/2 of comparisons
                 count[1]++;
                 return -1;
             }
