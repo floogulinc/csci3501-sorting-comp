@@ -48,3 +48,13 @@ application {
     // Define the main class for the application
     mainClassName = 'Group7'
 }
+
+task generatedata(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'DataGenerator2019'
+}
+
+task group0(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'Group0'
+}
