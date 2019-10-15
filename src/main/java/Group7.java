@@ -11,6 +11,10 @@ import java.math.BigInteger;
 public class Group7 {
     public static void main(String[] args) throws InterruptedException, FileNotFoundException,IOException {
         
+
+        Arrays.fill(FracComparator.count, 0);
+        //System.out.println(Runtime.getRuntime().availableProcessors());
+
         if (args.length < 2) {
             System.out.println("Please run with two command line arguments: input and output file names");
             System.exit(0);
@@ -33,6 +37,11 @@ public class Group7 {
         
         System.out.println(end - start);
         
+        for(int i : FracComparator.count) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
+
         // Report the results
         writeOutResult(sorted, outFileName);
     }
@@ -67,6 +76,10 @@ public class Group7 {
     public static class FracComparator implements Comparator<Data> {
         //private static final BigInteger zero= new BigInteger("0"); 
 
+
+        public static int count[] = new int[10];
+        
+
         @Override
         public int compare(Data s1, Data s2) {
 
@@ -75,41 +88,63 @@ public class Group7 {
             double approxDiff = s1.approx - s2.approx;
 
             if(approxDiff > 1) { // About 1/3 of comparisons
+                count[0]++;
                 return 1;
             } else if (approxDiff < -1) { // About 1/3 of comparisons
+                count[1]++;
                 return -1;
+            }
+
+            
+
+            if(s1.exprLine.equals(s2.exprLine)) {
+                count[2]++;
+                return 0;
             }
             
             int cmp = (s1.bigNumerator.multiply(s2.denominator)).compareTo(s2.bigNumerator.multiply(s1.denominator));  // Compare a/b to c/d by finding ad-bc
         
             
-            if(cmp!=0) { // True for 99.96% of comparisons (from before approx added)
+            if(cmp!=0) { // True for 99.96% of comparisons from before approx added, now very few
+                count[3]++;
                 return(cmp);
             }
 
+            
 
             // Only 0.03% of compares do this section, rest are unequal values
 
-            if(s1.type<s2.type)
+            if(s1.type<s2.type) {
+                count[4]++;
                 return(-1); // Same value, type of s1 "comes before" s2	
-            		
-            if(s1.type>s2.type)
-                return(1); // Same value, type of s1 "comes after" s2		
+            }
                 
+            		
+            if(s1.type>s2.type) {
+                count[5]++;
+                return(1); // Same value, type of s1 "comes after" s2	
+            }
+                	
+                
+            
             
             switch(s1.type){                 // s1.type==s2.type
                 case 0:                  // Same value both are decimal expressions they must be equal
+                    count[6]++;
                     return(0);
                 case 1:                  // Mixed fractions
+                    count[7]++;
                     cmp=(s1.whole).compareTo(s2.whole); // Compare whole numbers
                     if(cmp!=0){return(cmp);} // Sort off whole number
                     // NOTE:  There is no return or break in this case.  This is on purpose
                 case 2:                  // Pure fraction or equal whole numbers
+                    count[8]++;
                     return (s1.numerator).compareTo(s2.numerator); // Compare numerators of fraction portion
                     //if(cmp!=0){return(cmp);} // Sort off numerator
                     //return(0);
             }			
             System.err.println("DANGER.  Bad input parsed");
+            count[9]++;
             return(0); // This should never be reached
         }
     }
@@ -160,7 +195,7 @@ public class Group7 {
             
             bigNumerator = (whole.multiply(denominator)).add(numerator);// Make the big numerator
             //approx = bigNumerator.longValue() / denominator.longValue();
-            //approx = bigNumerator.divide(denominator).longValue();
+            //approx = bigNumerator.divide(denominator).doubleValue();
             approx = bigNumerator.doubleValue() / denominator.doubleValue();
 
         }
