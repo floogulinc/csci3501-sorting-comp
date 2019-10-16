@@ -6,6 +6,9 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+
+import org.huldra.math.BigInt;
+
 import java.math.BigInteger;
 
 public class Group7 {
@@ -33,7 +36,7 @@ public class Group7 {
         
         long start = System.currentTimeMillis(); // Begin the timing
         sorted = sort(toSort);
-        long end = System.currentTimeMillis();   // End the timing
+        long end = System.currentTimeMillis();   // End the timing 
         
         System.out.println(end - start);
         
@@ -101,8 +104,14 @@ public class Group7 {
                 count[2]++;
                 return 0;
             }
+
             
-            int cmp = (s1.bigNumerator.multiply(s2.denominator)).compareTo(s2.bigNumerator.multiply(s1.denominator));  // Compare a/b to c/d by finding ad-bc
+            BigInt c1 = s1.bigNumerator.copy();
+            BigInt c2 = s2.bigNumerator.copy();
+            c1.mul(s2.denominator);
+            c2.mul(s1.denominator);
+
+            int cmp = c1.compareTo(c2);  // Compare a/b to c/d by finding ad-bc
         
             
             if(cmp!=0) { // True for 99.96% of comparisons from before approx added, now very few
@@ -134,7 +143,8 @@ public class Group7 {
                     return(0);
                 case 1:                  // Mixed fractions
                     count[7]++;
-                    cmp=(s1.whole).compareTo(s2.whole); // Compare whole numbers
+                    //cmp=(s1.whole).compareTo(s2.whole); // Compare whole numbers
+                    Long.compare(s1.whole, s2.whole);
                     if(cmp!=0){return(cmp);} // Sort off whole number
                     // NOTE:  There is no return or break in this case.  This is on purpose
                 case 2:                  // Pure fraction or equal whole numbers
@@ -149,11 +159,11 @@ public class Group7 {
         }
     }
     public static class Data {             
-        public BigInteger numerator;    // Arbitrary Precision for Numerator
-        public BigInteger denominator;  // Arbitrary Precision for Denominator
-        public BigInteger whole;        // Arbitrary Prection for whole number (not needed... but makes the Big Integer arithmetic easier)
+        public BigInt numerator;    // Arbitrary Precision for Numerator
+        public BigInt denominator;  // Arbitrary Precision for Denominator
+        public long whole;        // Arbitrary Prection for whole number (not needed... but makes the Big Integer arithmetic easier)
         public int type=-1;             // -1 unspecified, 0 decimal, 1 mixed, 2 pure
-        public BigInteger bigNumerator; // The value of all expressions can be internally represented as bigNumerator/denominator
+        public BigInt bigNumerator; // The value of all expressions can be internally represented as bigNumerator/denominator
         
         public String exprLine;         // The original string-- useful to outputting at the end.
 
@@ -167,6 +177,7 @@ public class Group7 {
             // NOTE:  If the input is well-formed only one of the following three situations can arise
             //        to ensure mutual exclusion we could use nested if-else... but I think this is easier to read
             //        
+            String powerTen="1";
 
             
             posSlash=exprLine.indexOf("/"); // Find the slash (if any)
@@ -174,26 +185,38 @@ public class Group7 {
                 posSpace=exprLine.indexOf(" "); // Find the space (if any)
                 if(posSpace!=-1){ // We found a slash *and* a space
                     type=1;   // Set to type mixed
-                    whole=new BigInteger(exprLine.substring(0,posSpace));// Get everything before the space
-                    numerator=new BigInteger(exprLine.substring(posSpace+1,posSlash));// Get everything before the slash and after the space (if any)
+                    whole= Long.parseUnsignedLong(exprLine.substring(0,posSpace));// Get everything before the space
+                    numerator=new BigInt(exprLine.substring(posSpace+1,posSlash));// Get everything before the slash and after the space (if any)
                 } else {         // We found a slash *but* no space
                     type=2;  //Set to type pure fraction
-                    numerator=new BigInteger(exprLine.substring(0,posSlash));// Get everything before the slash
-                    whole = BigInteger.ZERO; // Not really defined for pure fractions... but simplifies bigNumerator calculation below
+                    numerator=new BigInt(exprLine.substring(0,posSlash));// Get everything before the slash
+                    whole = 0; // Not really defined for pure fractions... but simplifies bigNumerator calculation below
                 }
-                denominator=new BigInteger(exprLine.substring(posSlash+1));       // Get everything after the slash
+                denominator=new BigInt(exprLine.substring(posSlash+1));       // Get everything after the slash
             } else {
                 posDot=exprLine.indexOf("."); //Find the period (if any)
                 type=0;  // Set to type Decimal Expression
-                whole=new BigInteger(exprLine.substring(0,posDot));              // Get everything before the decimal point
-                numerator=new BigInteger(exprLine.substring(posDot+1));       // Get everything after the decimal point
-                //for(int i=1;i<exprLine.length()-posDot;i++){                     //Build the power of 10
-                //    powerTen+="0";
-                //}
-                denominator = BigInteger.TEN.pow(exprLine.length()-posDot-1);	// Number of places in the decimal expression		
+                whole=Long.parseUnsignedLong(exprLine.substring(0,posDot));              // Get everything before the decimal point
+                numerator=new BigInt(exprLine.substring(posDot+1));       // Get everything after the decimal point
+                for(int i=1;i<exprLine.length()-posDot;i++){                     //Build the power of 10
+                    powerTen+="0";
+                }
+                denominator=new BigInt(powerTen); 
+
+                approx = Double.parseDouble(line);
+
+                bigNumerator = denominator.copy();
+                bigNumerator.umul(whole);
+                bigNumerator.add(numerator);
+
+                return;
             }
             
-            bigNumerator = (whole.multiply(denominator)).add(numerator);// Make the big numerator
+            bigNumerator = denominator.copy();
+            bigNumerator.umul(whole);
+            bigNumerator.add(numerator);
+
+            //bigNumerator = (whole.multiply(denominator)).add(numerator);// Make the big numerator
             //approx = bigNumerator.longValue() / denominator.longValue();
             //approx = bigNumerator.divide(denominator).doubleValue();
             approx = bigNumerator.doubleValue() / denominator.doubleValue();
