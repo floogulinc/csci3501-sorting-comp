@@ -64,22 +64,6 @@
             line-height: 0.8em;
         }
         
-        /* Two-column layout */
-        .left-column {
-            color: #777;
-            width: 20%;
-            height: 92%;
-            float: left;
-        }
-        .left-column h2:last-of-type, .left-column h3:last-child {
-            color: #000;
-        }
-        .right-column {
-            width: 75%;
-            float: right;
-            padding-top: 1em;
-        }
-        
         @page {
             size: 1210px 681px;
             margin: 0;
@@ -112,8 +96,21 @@ Paul Friederichsen
 
 # The Algorithm
 
-- Optimized version of the original comparator
+.pull-left[
 
+- Optimized version of the original comparator
+- Calculates approximate value as a `Double` during `Data` object creation
+- Uses approximate value for quick comparison for values that are definitely different
+  - Threshold of ±0.00000001
+
+## Efficiency 
+
+
+]
+.pull-right[
+
+
+]
 ---
 
 ## The Algorithm
@@ -152,7 +149,7 @@ public int compare(Data s1, Data s2) {
     // Calculate difference in the approximate (double) values of the two numbers
     // This is much cheaper than the full precision check so we do it first
 
-    double approxDiff = s1.approx - s2.approx;
+*   double approxDiff = s1.approx - s2.approx;
 
     // If it is within a reasonable margin we can assume they 
     // are different values and return the appropriate comparison
@@ -201,6 +198,78 @@ public int compare(Data s1, Data s2) {
     }
 }
 ```
+---
+
+# Testing
+
+<img src="https://i.vgy.me/n910bH.png" style="width:100%">
+
+---
+
+```java
+public class Group7SortTest {
+
+    public void testSort(int numElements) {
+        String[] data = DataGenerator2019.generateDataArray(numElements);
+        String[] toSort1 = data.clone();
+        String[] toSort2 = data.clone();
+
+        String[] sorted1 = Arrays.stream(Group0.sort(toSort1)).map(x -> x.exprLine).toArray(String[]::new);
+        String[] sorted2 = Arrays.stream(Group7.sort(toSort2)).map(x -> x.exprLine).toArray(String[]::new);
+
+        assertEquals(numElements, sorted2.length);
+        assertTrue(Arrays.asList(sorted2).containsAll(Arrays.asList(data)));
+        assertArrayEquals(sorted1, sorted2);
+    }
+
+    @RepeatedTest(value = 100, name = RepeatedTest.LONG_DISPLAY_NAME) 
+    public void testSort10000Multi() {
+        testSort(10000);
+    }
+
+    @RepeatedTest(value = 1000, name = RepeatedTest.LONG_DISPLAY_NAME) 
+    public void testSort1000Multi() {
+        testSort(1000);
+    }
+}
+```
+
+
+---
+
+```java
+public class Group7ComparatorTest {
+
+    public static int compareFracGroup7(String s1, String s2) {
+        Group7.Data testItem,testItem2;
+        Group7.FracComparator comparator=new Group7.FracComparator();
+        testItem=new Group7.Data(s1); testItem2=new Group7.Data(s2);
+        return comparator.compare(testItem,testItem2);
+    }
+    public static int compareFracGroup0(String s1, String s2) {
+        Group0.Data testItem,testItem2;
+        Group0.FracComparator comparator=new Group0.FracComparator();
+        testItem=new Group0.Data(s1); testItem2=new Group0.Data(s2);
+        return comparator.compare(testItem,testItem2);
+    }
+
+    public void testCompare(int numElements) {
+        String[] data = DataGenerator2019.generateDataArray(numElements);
+        for(String s1 : data) {
+            for(String s2 : data) {
+                assertEquals(compareFracGroup0(s1, s2), compareFracGroup7(s1, s2));
+            }
+        }
+    }
+}
+```
+
+---
+
+class: center, middle, inverse
+
+# Thanks
+
 
     </textarea>
     <script src="https://remarkjs.com/downloads/remark-latest.min.js">
