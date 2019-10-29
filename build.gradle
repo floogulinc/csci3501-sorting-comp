@@ -58,3 +58,8 @@ task group0(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'Group0'
 }
+
+task group7(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'Group7'
+}
