@@ -100,6 +100,7 @@ public class Group7 {
 
             
 
+            // Catches exactly equal values, mostly decimal
             if(s1.exprLine.equals(s2.exprLine)) { // About 0.4% of comparisons
                 count[2]++;
                 return 0;
