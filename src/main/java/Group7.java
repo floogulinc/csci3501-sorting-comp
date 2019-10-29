@@ -12,7 +12,7 @@ public class Group7 {
     public static void main(String[] args) throws InterruptedException, FileNotFoundException,IOException {
         
 
-        Arrays.fill(FracComparator.count, 0);
+        Arrays.fill(FracComparatorGroup7.count, 0);
         //System.out.println(Runtime.getRuntime().availableProcessors());
 
         if (args.length < 2) {
@@ -24,11 +24,11 @@ public class Group7 {
         String outFileName = args[1];
         
         // read as strings
-        String [] data = readData(inputFileName);
-        String [] toSort = data.clone();
-        Data [] sorted = sort(toSort); // Warm up the VM
+        String [] DataGroup7 = readDataGroup7(inputFileName);
+        String [] toSort = DataGroup7.clone();
+        DataGroup7 [] sorted = sort(toSort); // Warm up the VM
 
-        toSort = data.clone();
+        toSort = DataGroup7.clone();
         Thread.sleep(10); //to let other things finish before timing; adds stability of runs
         
         long start = System.currentTimeMillis(); // Begin the timing
@@ -37,7 +37,7 @@ public class Group7 {
         
         System.out.println(end - start);
         
-        for(int i : FracComparator.count) {
+        for(int i : FracComparatorGroup7.count) {
             System.out.print(i + " ");
         }
         System.out.println();
@@ -48,32 +48,32 @@ public class Group7 {
     
     // YOUR SORTING METHOD GOES HERE.
     // You may call other methods and use other classes.
-    // You may ALSO modify the methods, innner classes, etc, of Data[]
+    // You may ALSO modify the methods, innner classes, etc, of DataGroup7[]
     // But not in way that transfers information from the warmup sort to the timed sort.
     // Note: you may change the return type of the method.
     // You would need to provide your own function that prints your sorted array to
     // a file in the exact same format that my program outputs
-    public static Data[] sort(String[] toSort) {
+    public static DataGroup7[] sort(String[] toSort) {
         
-        return Arrays.stream(toSort).map(Data::new).sorted(new FracComparator()).toArray(Data[]::new);
+        return Arrays.stream(toSort).map(DataGroup7::new).sorted(new FracComparatorGroup7()).toArray(DataGroup7[]::new);
 
     }
     
-    private static String[] readData(String inFile) throws FileNotFoundException,IOException {
+    private static String[] readDataGroup7(String inFile) throws FileNotFoundException,IOException {
         List<String> input = Files.readAllLines(Paths.get(inFile));
         // the string array is passed just so that the correct type can be created
         return input.toArray(new String[0]);
     }
     
-    private static void writeOutResult(Data[] sorted, String outputFilename) throws FileNotFoundException {
+    private static void writeOutResult(DataGroup7[] sorted, String outputFilename) throws FileNotFoundException {
         PrintWriter out = new PrintWriter(outputFilename);
-        for (Data s : sorted) {
+        for (DataGroup7 s : sorted) {
             out.println(s.exprLine);
         }
         out.close();
     }
     
-    public static class FracComparator implements Comparator<Data> {
+    public static class FracComparatorGroup7 implements Comparator<DataGroup7> {
         //private static final BigInteger zero= new BigInteger("0"); 
 
 
@@ -81,7 +81,7 @@ public class Group7 {
         
 
         @Override
-        public int compare(Data s1, Data s2) {
+        public int compare(DataGroup7 s1, DataGroup7 s2) {
 
             // This is much cheaper than the full precision check so we do it first
 
@@ -148,7 +148,7 @@ public class Group7 {
             return(0); // This should never be reached
         }
     }
-    public static class Data {             
+    public static class DataGroup7 {             
         public BigInteger numerator;    // Arbitrary Precision for Numerator
         public BigInteger denominator;  // Arbitrary Precision for Denominator
         public BigInteger whole;        // Arbitrary Prection for whole number (not needed... but makes the Big Integer arithmetic easier)
@@ -159,7 +159,7 @@ public class Group7 {
 
         public double approx;
         
-        public Data(String line){
+        public DataGroup7(String line){
             int posSlash=-1;       // Assume no slash
             int posSpace=-1;       // No space
             int posDot=-1;         // And no period

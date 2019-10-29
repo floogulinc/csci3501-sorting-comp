@@ -8,9 +8,9 @@ import org.junit.jupiter.api.RepeatedTest;
 public class Group7ComparatorTest {
 
     public static int compareFracGroup7(String s1, String s2) {
-        Group7.Data testItem,testItem2;
-        Group7.FracComparator comparator=new Group7.FracComparator();
-        testItem=new Group7.Data(s1); testItem2=new Group7.Data(s2);
+        Group7.DataGroup7 testItem,testItem2;
+        Group7.FracComparatorGroup7 comparator=new Group7.FracComparatorGroup7();
+        testItem=new Group7.DataGroup7(s1); testItem2=new Group7.DataGroup7(s2);
         return comparator.compare(testItem,testItem2);
     }
     public static int compareFracGroup0(String s1, String s2) {
@@ -116,9 +116,9 @@ public class Group7ComparatorTest {
     
 
     public static void print_test(String s1,String s2){
-        Group7.Data testItem,testItem2;
-        Group7.FracComparator comparator=new Group7.FracComparator();
-        testItem=new Group7.Data(s1); testItem2=new Group7.Data(s2);
+        Group7.DataGroup7 testItem,testItem2;
+        Group7.FracComparatorGroup7 comparator=new Group7.FracComparatorGroup7();
+        testItem=new Group7.DataGroup7(s1); testItem2=new Group7.DataGroup7(s2);
         System.out.println("Compare: "+s1+" to "+s2+": ");
         System.out.println("Result="+comparator.compare(testItem,testItem2));
         System.out.println("Compare: "+s2+" to "+s1+": ");
