@@ -55,6 +55,8 @@ public class Group7 {
     // a file in the exact same format that my program outputs
     public static DataGroup7[] sort(String[] toSort) {
         
+        // Get the array of strings as a stream, map it to the DataGroup7 class, 
+        // sort it with FracComparatorGroup7, and put the results into a sorted array
         return Arrays.stream(toSort).map(DataGroup7::new).sorted(new FracComparatorGroup7()).toArray(DataGroup7[]::new);
 
     }
@@ -74,38 +76,41 @@ public class Group7 {
     }
     
     public static class FracComparatorGroup7 implements Comparator<DataGroup7> {
-        //private static final BigInteger zero= new BigInteger("0"); 
 
-
+        // Debug counter
         public static int count[] = new int[10];
         
 
         @Override
         public int compare(DataGroup7 s1, DataGroup7 s2) {
 
+            // Calculate difference in the approximate (double) values of the two numbers
             // This is much cheaper than the full precision check so we do it first
 
             double approxDiff = s1.approx - s2.approx;
 
-            if(approxDiff > 0.00000001) { // About 1/2 of comparisons
+            // If it is within a reasonable margin we can assume they are different values and return the appropriate comparison
+            if(approxDiff > 0.00000001) { // About 50% of comparisons
                 count[0]++;
                 return 1;
-            } else if (approxDiff < -0.00000001) { // About 1/2 of comparisons
+            } else if (approxDiff < -0.00000001) { // About  50% of comparisons
                 count[1]++;
                 return -1;
             }
 
             
 
-            if(s1.exprLine.equals(s2.exprLine)) {
+            if(s1.exprLine.equals(s2.exprLine)) { // About 0.4% of comparisons
                 count[2]++;
                 return 0;
             }
             
+
+            // This is very expensive to do so we avoid it if possible, very few comparisons get to this point
             int cmp = (s1.bigNumerator.multiply(s2.denominator)).compareTo(s2.bigNumerator.multiply(s1.denominator));  // Compare a/b to c/d by finding ad-bc
         
-            
-            if(cmp!=0) { // True for 99.96% of comparisons from before approx added, now very few
+            // This was true for 99.96% of comparisons before approx comparison was added, now very few get to here
+            if(cmp!=0) { // About 0.0015% of comparisons
                 count[3]++;
                 return(cmp);
             }
@@ -114,13 +119,13 @@ public class Group7 {
 
             // Only 0.03% of compares do this section, rest are unequal values
 
-            if(s1.type<s2.type) {
+            if(s1.type<s2.type) { // usually no comparisons match this
                 count[4]++;
                 return(-1); // Same value, type of s1 "comes before" s2	
             }
                 
             		
-            if(s1.type>s2.type) {
+            if(s1.type>s2.type) { // usually no comparisons match this
                 count[5]++;
                 return(1); // Same value, type of s1 "comes after" s2	
             }
@@ -129,15 +134,15 @@ public class Group7 {
             
             
             switch(s1.type){                 // s1.type==s2.type
-                case 0:                  // Same value both are decimal expressions they must be equal
+                case 0:                  // Same value both are decimal expressions they must be equal, usually no comparisons match this
                     count[6]++;
                     return(0);
-                case 1:                  // Mixed fractions
+                case 1:                  // Mixed fractions, usually no comparisons match this
                     count[7]++;
-                    cmp=(s1.whole).compareTo(s2.whole); // Compare whole numbers
+                    cmp=(s1.whole).compareTo(s2.whole); // Compare whole numbers, usually no comparisons match this
                     if(cmp!=0){return(cmp);} // Sort off whole number
                     // NOTE:  There is no return or break in this case.  This is on purpose
-                case 2:                  // Pure fraction or equal whole numbers
+                case 2:                  // Pure fraction or equal whole numbers, About 0.15% of comparisons
                     count[8]++;
                     return (s1.numerator).compareTo(s2.numerator); // Compare numerators of fraction portion
                     //if(cmp!=0){return(cmp);} // Sort off numerator
@@ -157,7 +162,7 @@ public class Group7 {
         
         public String exprLine;         // The original string-- useful to outputting at the end.
 
-        public double approx;
+        public double approx;           // Approximate double value of the number
         
         public DataGroup7(String line){
             int posSlash=-1;       // Assume no slash
@@ -187,16 +192,13 @@ public class Group7 {
                 type=0;  // Set to type Decimal Expression
                 whole=new BigInteger(exprLine.substring(0,posDot));              // Get everything before the decimal point
                 numerator=new BigInteger(exprLine.substring(posDot+1));       // Get everything after the decimal point
-                //for(int i=1;i<exprLine.length()-posDot;i++){                     //Build the power of 10
-                //    powerTen+="0";
-                //}
-                denominator = BigInteger.TEN.pow(exprLine.length()-posDot-1);	// Number of places in the decimal expression		
+
+                denominator = BigInteger.TEN.pow(exprLine.length()-posDot-1);		
             }
             
             bigNumerator = (whole.multiply(denominator)).add(numerator);// Make the big numerator
-            //approx = bigNumerator.longValue() / denominator.longValue();
-            //approx = bigNumerator.divide(denominator).doubleValue();
-            approx = bigNumerator.doubleValue() / denominator.doubleValue();
+
+            approx = bigNumerator.doubleValue() / denominator.doubleValue(); // Make the approximate value, a double
 
         }
         
