@@ -206,6 +206,8 @@ public int compare(Data s1, Data s2) {
 
 ---
 
+## Testing
+
 ```java
 public class Group7SortTest {
 
@@ -234,41 +236,12 @@ public class Group7SortTest {
 }
 ```
 
-
----
-
-```java
-public class Group7ComparatorTest {
-
-    public static int compareFracGroup7(String s1, String s2) {
-        Group7.Data testItem,testItem2;
-        Group7.FracComparator comparator=new Group7.FracComparator();
-        testItem=new Group7.Data(s1); testItem2=new Group7.Data(s2);
-        return comparator.compare(testItem,testItem2);
-    }
-    public static int compareFracGroup0(String s1, String s2) {
-        Group0.Data testItem,testItem2;
-        Group0.FracComparator comparator=new Group0.FracComparator();
-        testItem=new Group0.Data(s1); testItem2=new Group0.Data(s2);
-        return comparator.compare(testItem,testItem2);
-    }
-
-    public void testCompare(int numElements) {
-        String[] data = DataGenerator2019.generateDataArray(numElements);
-        for(String s1 : data) {
-            for(String s2 : data) {
-                assertEquals(compareFracGroup0(s1, s2), compareFracGroup7(s1, s2));
-            }
-        }
-    }
-}
-```
-
 ---
 
 class: center, middle, inverse
 
 # Thanks
+[github.com/floogulinc/csci3501-sorting-comp](https://github.com/floogulinc/csci3501-sorting-comp)
 
 
     </textarea>
