@@ -90,10 +90,10 @@ public class Group7 {
             double approxDiff = s1.approx - s2.approx;
 
             // If it is within a reasonable margin we can assume they are different values and return the appropriate comparison
-            if(approxDiff > 0.00000001) { // About 50% of comparisons
+            if(approxDiff > 0.000000000001) { // About 50% of comparisons
                 count[0]++;
                 return 1;
-            } else if (approxDiff < -0.00000001) { // About  50% of comparisons
+            } else if (approxDiff < -0.000000000001) { // About  50% of comparisons
                 count[1]++;
                 return -1;
             }
