@@ -120,30 +120,36 @@ public class Group7 {
 
             // Only 0.03% of compares do this section, rest are unequal values
 
-            if(s1.type<s2.type) { // usually no comparisons match this
+            int typecmp = s1.type.compareTo(s2.type);
+            if(typecmp != 0) {
                 count[4]++;
-                return(-1); // Same value, type of s1 "comes before" s2	
+                return(typecmp);
             }
+
+            // if(s1.type<s2.type) { // usually no comparisons match this
+            //     count[4]++;
+            //     return(-1); // Same value, type of s1 "comes before" s2	
+            // }
                 
             		
-            if(s1.type>s2.type) { // usually no comparisons match this
-                count[5]++;
-                return(1); // Same value, type of s1 "comes after" s2	
-            }
+            // if(s1.type>s2.type) { // usually no comparisons match this
+            //     count[5]++;
+            //     return(1); // Same value, type of s1 "comes after" s2	
+            // }
                 	
                 
             
             
             switch(s1.type){                 // s1.type==s2.type
-                case 0:                  // Same value both are decimal expressions they must be equal, usually no comparisons match this
+                case DECIMAL:                  // Same value both are decimal expressions they must be equal, usually no comparisons match this
                     count[6]++;
                     return(0);
-                case 1:                  // Mixed fractions, usually no comparisons match this
+                case MIXED:                  // Mixed fractions, usually no comparisons match this
                     count[7]++;
                     cmp=(s1.whole).compareTo(s2.whole); // Compare whole numbers, usually no comparisons match this
                     if(cmp!=0){return(cmp);} // Sort off whole number
                     // NOTE:  There is no return or break in this case.  This is on purpose
-                case 2:                  // Pure fraction or equal whole numbers, About 0.15% of comparisons
+                case PURE:                  // Pure fraction or equal whole numbers, About 0.15% of comparisons
                     count[8]++;
                     return (s1.numerator).compareTo(s2.numerator); // Compare numerators of fraction portion
                     //if(cmp!=0){return(cmp);} // Sort off numerator
@@ -156,10 +162,11 @@ public class Group7 {
     }
     public static class Data {             
         public BigInteger numerator;    // Arbitrary Precision for Numerator
-        public BigInteger denominator;  // Arbitrary Precision for Denominator
-        public BigInteger whole;        // Arbitrary Prection for whole number (not needed... but makes the Big Integer arithmetic easier)
-        public int type=-1;             // -1 unspecified, 0 decimal, 1 mixed, 2 pure
+        static enum NumType {
+            DECIMAL, MIXED, PURE;
+        }
         public BigInteger bigNumerator; // The value of all expressions can be internally represented as bigNumerator/denominator
+        public NumType type = null;             // -1 unspecified, 0 decimal, 1 mixed, 2 pure
         
         public String exprLine;         // The original string-- useful to outputting at the end.
 
@@ -179,18 +186,18 @@ public class Group7 {
             if(posSlash!=-1){ // We found a slash so expression is either mixed or pure
                 posSpace=exprLine.indexOf(" "); // Find the space (if any)
                 if(posSpace!=-1){ // We found a slash *and* a space
-                    type=1;   // Set to type mixed
+                    type=NumType.MIXED;   // Set to type mixed
                     whole=new BigInteger(exprLine.substring(0,posSpace));// Get everything before the space
                     numerator=new BigInteger(exprLine.substring(posSpace+1,posSlash));// Get everything before the slash and after the space (if any)
                 } else {         // We found a slash *but* no space
-                    type=2;  //Set to type pure fraction
+                    type=NumType.PURE;  //Set to type pure fraction
                     numerator=new BigInteger(exprLine.substring(0,posSlash));// Get everything before the slash
                     whole = BigInteger.ZERO; // Not really defined for pure fractions... but simplifies bigNumerator calculation below
                 }
                 denominator=new BigInteger(exprLine.substring(posSlash+1));       // Get everything after the slash
             } else {
                 posDot=exprLine.indexOf("."); //Find the period (if any)
-                type=0;  // Set to type Decimal Expression
+                type=NumType.DECIMAL;  // Set to type Decimal Expression
                 whole=new BigInteger(exprLine.substring(0,posDot));              // Get everything before the decimal point
                 numerator=new BigInteger(exprLine.substring(posDot+1));       // Get everything after the decimal point
 
