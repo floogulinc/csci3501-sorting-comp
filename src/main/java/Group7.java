@@ -162,10 +162,15 @@ public class Group7 {
     }
     public static class Data {             
         public BigInteger numerator;    // Arbitrary Precision for Numerator
+        public BigInteger denominator;  // Arbitrary Precision for Denominator
+        public BigInteger whole;        // Arbitrary Prection for whole number (not needed... but makes the Big Integer arithmetic easier)
+
+        public BigInteger bigNumerator; // The value of all expressions can be internally represented as bigNumerator/denominator
+
         static enum NumType {
             DECIMAL, MIXED, PURE;
         }
-        public BigInteger bigNumerator; // The value of all expressions can be internally represented as bigNumerator/denominator
+
         public NumType type = null;             // -1 unspecified, 0 decimal, 1 mixed, 2 pure
         
         public String exprLine;         // The original string-- useful to outputting at the end.
