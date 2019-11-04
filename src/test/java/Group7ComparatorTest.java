@@ -104,6 +104,11 @@ public class Group7ComparatorTest {
         assertTrue(compareFracGroup7("13/4","1 7/4") > 0);
     }
 
+    @Test public void testFracComparator12() {
+        assertTrue(compareFracGroup7("6346791669/6375951545","4807334027/4829420976") < 0);
+        assertTrue(compareFracGroup7("4807334027/4829420976","6346791669/6375951545") > 0);
+    }
+
     // @Test public void testFracComparatorNegative1() {
     //     assertTrue(compareFracGroup7("-5394608174567520344/-182296925182177504","9903601889/314275584") > 0);
     //     assertTrue(compareFracGroup7("9903601889/314275584","-5394608174567520344/-182296925182177504") < 0);
