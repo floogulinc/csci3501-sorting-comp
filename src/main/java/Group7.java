@@ -10,10 +10,6 @@ import java.math.BigInteger;
 
 public class Group7 {
     public static void main(String[] args) throws InterruptedException, FileNotFoundException,IOException {
-        
-
-        Arrays.fill(FracComparator.count, 0);
-        //System.out.println(Runtime.getRuntime().availableProcessors());
 
         if (args.length < 2) {
             System.out.println("Please run with two command line arguments: input and output file names");
@@ -36,11 +32,6 @@ public class Group7 {
         long end = System.currentTimeMillis();   // End the timing
         
         System.out.println(end - start);
-        
-        for(int i : FracComparator.count) {
-            System.out.print(i + " ");
-        }
-        System.out.println();
 
         // Report the results
         writeOutResult(sorted, outFileName);
@@ -77,10 +68,6 @@ public class Group7 {
     
     public static class FracComparator implements Comparator<Data> {
 
-        // Debug counter
-        public static int count[] = new int[10];
-        
-
         @Override
         public int compare(Data s1, Data s2) {
 
@@ -92,10 +79,8 @@ public class Group7 {
             // If it is within a reasonable margin we can assume they are different values 
             // and return the appropriate comparison
             if(approxDiff < -0.000000000001) { // About 50% of comparisons
-                count[0]++;
                 return -1;
             } else if (approxDiff > 0.000000000001) { // About  50% of comparisons
-                count[1]++;
                 return 1;
             }
 
@@ -103,7 +88,6 @@ public class Group7 {
 
             // Catches exactly equal values, mostly decimal
             if(s1.exprLine.equals(s2.exprLine)) { // About 0.4% of comparisons
-                count[2]++;
                 return 0;
             }
             
@@ -115,7 +99,6 @@ public class Group7 {
         
             // This was true for 99.96% of comparisons before approx comparison was added, now very few get to here
             if(cmp!=0) { // Nearly never true
-                count[3]++;
                 return(cmp);
             }
 
@@ -126,7 +109,6 @@ public class Group7 {
             // Compare type of number (enum compares based on order) and if different, that comparison is returned
             int typecmp = s1.type.compareTo(s2.type);
             if(typecmp != 0) {
-                count[4]++;
                 return(typecmp);
             }
 
@@ -146,21 +128,17 @@ public class Group7 {
             
             switch(s1.type){ // s1.type==s2.type
                 case DECIMAL: // Same value both are decimal expressions they must be equal, usually no comparisons match this
-                    count[6]++;
                     return(0);
                 case MIXED: // Mixed fractions, usually no comparisons match this
-                    count[7]++;
                     cmp=(s1.whole).compareTo(s2.whole); // Compare whole numbers, usually no comparisons match this
                     if(cmp!=0){return(cmp);} // Sort off whole number
                     // NOTE:  There is no return or break in this case.  This is on purpose
                 case PURE:                  // Pure fraction or equal whole numbers, About 0.15% of comparisons
-                    count[8]++;
                     return (s1.numerator).compareTo(s2.numerator); // Compare numerators of fraction portion
                     //if(cmp!=0){return(cmp);} // Sort off numerator
                     //return(0);
             }			
             System.err.println("DANGER.  Bad input parsed");
-            count[9]++;
             return(0); // This should never be reached
         }
     }

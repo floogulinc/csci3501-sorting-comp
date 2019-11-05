@@ -156,10 +156,8 @@ public int compare(Data s1, Data s2) {
     // If it is within a reasonable margin we can assume they are different values 
     // and return the appropriate comparison
     if(approxDiff < -0.000000000001) { // About 50% of comparisons
-        count[0]++;
         return -1;
     } else if (approxDiff > 0.000000000001) { // About  50% of comparisons
-        count[1]++;
         return 1;
     }
 
@@ -167,15 +165,18 @@ public int compare(Data s1, Data s2) {
 
     // Catches exactly equal values, mostly decimal
     if(s1.exprLine.equals(s2.exprLine)) { // About 0.4% of comparisons
-        count[2]++;
         return 0;
     }
+
+    ...
 ```
 ---
 
 ## The Algorithm
 
 ```java
+    ...
+    
     // This is very expensive to do so we avoid it if possible, very few comparisons get to this point
     // Because of the approximation it became faster to calculate the bigNumerator here instead of for every item
     // since even 2x the number of comparisons that get to here is a 10x fewer than the number of items
@@ -186,7 +187,6 @@ public int compare(Data s1, Data s2) {
 
     // This was true for 99.96% of comparisons before approx comparison was added, now very few get to here
     if(cmp!=0) { // Nearly never true
-        count[3]++;
         return(cmp);
     }
 
@@ -195,7 +195,6 @@ public int compare(Data s1, Data s2) {
     // Compare type of number (enum compares based on order) and if different, that comparison is returned
     int typecmp = s1.type.compareTo(s2.type);
     if(typecmp != 0) {
-        count[4]++;
         return(typecmp);
     }
         
