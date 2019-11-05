@@ -90,12 +90,12 @@ public class Group7 {
             double approxDiff = s1.approx - s2.approx;
 
             // If it is within a reasonable margin we can assume they are different values and return the appropriate comparison
-            if(approxDiff > 0.000000000001) { // About 50% of comparisons
+            if(approxDiff < -0.000000000001) { // About 50% of comparisons
                 count[0]++;
-                return 1;
-            } else if (approxDiff < -0.000000000001) { // About  50% of comparisons
-                count[1]++;
                 return -1;
+            } else if (approxDiff > 0.000000000001) { // About  50% of comparisons
+                count[1]++;
+                return 1;
             }
 
             
@@ -108,7 +108,7 @@ public class Group7 {
             
 
             // This is very expensive to do so we avoid it if possible, very few comparisons get to this point
-            int cmp = (s1.bigNumerator.multiply(s2.denominator)).compareTo(s2.bigNumerator.multiply(s1.denominator));  // Compare a/b to c/d by finding ad-bc
+            int cmp = (((s1.whole.multiply(s1.denominator)).add(s1.numerator)).multiply(s2.denominator)).compareTo(((s2.whole.multiply(s2.denominator)).add(s2.numerator)).multiply(s1.denominator));  // Compare a/b to c/d by finding ad-bc
         
             // This was true for 99.96% of comparisons before approx comparison was added, now very few get to here
             if(cmp!=0) { // About 0.0015% of comparisons
@@ -165,7 +165,7 @@ public class Group7 {
         public BigInteger denominator;  // Arbitrary Precision for Denominator
         public BigInteger whole;        // Arbitrary Prection for whole number (not needed... but makes the Big Integer arithmetic easier)
 
-        public BigInteger bigNumerator; // The value of all expressions can be internally represented as bigNumerator/denominator
+        //public BigInteger bigNumerator; // The value of all expressions can be internally represented as bigNumerator/denominator
 
         static enum NumType {
             DECIMAL, MIXED, PURE;
@@ -209,9 +209,11 @@ public class Group7 {
                 denominator = BigInteger.TEN.pow(exprLine.length()-posDot-1);		
             }
             
-            bigNumerator = (whole.multiply(denominator)).add(numerator);// Make the big numerator
+            //bigNumerator = (whole.multiply(denominator)).add(numerator);// Make the big numerator
 
-            approx = bigNumerator.doubleValue() / denominator.doubleValue(); // Make the approximate value, a double
+            double den = denominator.doubleValue();
+
+            approx = ((whole.doubleValue() * den) + numerator.doubleValue()) / den; // Make the approximate value, a double
 
         }
         
