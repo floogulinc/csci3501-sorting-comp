@@ -84,14 +84,13 @@ public class Group7 {
                 return 1;
             }
 
-            
 
             // Catches exactly equal values, mostly decimal
             if(s1.exprLine.equals(s2.exprLine)) { // About 0.4% of comparisons
                 return 0;
             }
             
-
+            
             // This is very expensive to do so we avoid it if possible, very few comparisons get to this point
             // Because of the approximation it became faster to calculate the bigNumerator here instead of for every item
             // since even 2x the number of comparisons that get to here is a 10x fewer than the number of items
@@ -102,29 +101,12 @@ public class Group7 {
                 return(cmp);
             }
 
-            
-
-            // Only 0.03% of compares do this section, rest are unequal values
 
             // Compare type of number (enum compares based on order) and if different, that comparison is returned
             int typecmp = s1.type.compareTo(s2.type);
             if(typecmp != 0) {
                 return(typecmp);
             }
-
-            // if(s1.type<s2.type) { // usually no comparisons match this
-            //     count[4]++;
-            //     return(-1); // Same value, type of s1 "comes before" s2	
-            // }
-                
-            		
-            // if(s1.type>s2.type) { // usually no comparisons match this
-            //     count[5]++;
-            //     return(1); // Same value, type of s1 "comes after" s2	
-            // }
-                	
-                
-            
             
             switch(s1.type){ // s1.type==s2.type
                 case DECIMAL: // Same value both are decimal expressions they must be equal, usually no comparisons match this
