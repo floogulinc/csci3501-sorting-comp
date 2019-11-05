@@ -89,7 +89,8 @@ public class Group7 {
 
             double approxDiff = s1.approx - s2.approx;
 
-            // If it is within a reasonable margin we can assume they are different values and return the appropriate comparison
+            // If it is within a reasonable margin we can assume they are different values 
+            // and return the appropriate comparison
             if(approxDiff < -0.000000000001) { // About 50% of comparisons
                 count[0]++;
                 return -1;
@@ -108,10 +109,12 @@ public class Group7 {
             
 
             // This is very expensive to do so we avoid it if possible, very few comparisons get to this point
+            // Because of the approximation it became faster to calculate the bigNumerator here instead of for every item
+            // since even 2x the number of comparisons that get to here is a 10x fewer than the number of items
             int cmp = (((s1.whole.multiply(s1.denominator)).add(s1.numerator)).multiply(s2.denominator)).compareTo(((s2.whole.multiply(s2.denominator)).add(s2.numerator)).multiply(s1.denominator));  // Compare a/b to c/d by finding ad-bc
         
             // This was true for 99.96% of comparisons before approx comparison was added, now very few get to here
-            if(cmp!=0) { // About 0.0015% of comparisons
+            if(cmp!=0) { // Nearly never true
                 count[3]++;
                 return(cmp);
             }
@@ -120,6 +123,7 @@ public class Group7 {
 
             // Only 0.03% of compares do this section, rest are unequal values
 
+            // Compare type of number (enum compares based on order) and if different, that comparison is returned
             int typecmp = s1.type.compareTo(s2.type);
             if(typecmp != 0) {
                 count[4]++;
@@ -140,11 +144,11 @@ public class Group7 {
                 
             
             
-            switch(s1.type){                 // s1.type==s2.type
-                case DECIMAL:                  // Same value both are decimal expressions they must be equal, usually no comparisons match this
+            switch(s1.type){ // s1.type==s2.type
+                case DECIMAL: // Same value both are decimal expressions they must be equal, usually no comparisons match this
                     count[6]++;
                     return(0);
-                case MIXED:                  // Mixed fractions, usually no comparisons match this
+                case MIXED: // Mixed fractions, usually no comparisons match this
                     count[7]++;
                     cmp=(s1.whole).compareTo(s2.whole); // Compare whole numbers, usually no comparisons match this
                     if(cmp!=0){return(cmp);} // Sort off whole number
@@ -209,11 +213,12 @@ public class Group7 {
                 denominator = BigInteger.TEN.pow(exprLine.length()-posDot-1);		
             }
             
+            // We skip making the bigNumerator for every item and calculate it when needed
             //bigNumerator = (whole.multiply(denominator)).add(numerator);// Make the big numerator
 
             double den = denominator.doubleValue();
 
-            approx = ((whole.doubleValue() * den) + numerator.doubleValue()) / den; // Make the approximate value, a double
+            approx = ((whole.doubleValue() * den) + numerator.doubleValue()) / den; // Make the approximate (double) value
 
         }
         
