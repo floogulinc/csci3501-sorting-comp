@@ -7,12 +7,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import java.math.BigInteger;
 
 public class Group7 {
     public static void main(String[] args) throws InterruptedException, FileNotFoundException,IOException {
-
-        Arrays.fill(FracComparator.count, 0);
 
         if (args.length < 2) {
             System.out.println("Please run with two command line arguments: input and output file names");
@@ -35,11 +32,6 @@ public class Group7 {
         long end = System.currentTimeMillis();   // End the timing
         
         System.out.println(end - start);
-
-        for(int i : FracComparator.count) {
-            System.out.print(i + " ");
-        }
-        System.out.println();
 
         // Report the results
         writeOutResult(sorted, outFileName);
@@ -76,9 +68,6 @@ public class Group7 {
     
     public static class FracComparator implements Comparator<Data> {
 
-        // Debug counter
-        public static int count[] = new int[10];
-
         @Override
         public int compare(Data s1, Data s2) {
 
@@ -90,61 +79,45 @@ public class Group7 {
             // If it is within a reasonable margin we can assume they are different values 
             // and return the appropriate comparison
             if(approxDiff < -0.00000000000001) { // About 50% of comparisons
-                count[0]++;
                 return -1;
             } else if (approxDiff > 0.00000000000001) { // About  50% of comparisons
-                count[1]++;
                 return 1;
             }
 
 
             // Catches exactly equal values, mostly decimal
-            if(s1.exprLine.equals(s2.exprLine)) { // About 0.4% of comparisons
-                count[2]++;
+            if(s1.exprLine.equals(s2.exprLine)) { // About 0.5% of comparisons
                 return 0;
             }
+
+            // We assume that if the approx values were equal and the strings aren't equal, 
+            // they are equal value but different representations, which nearly always is two pure fractions
     
             // If both are pure fractions, compare numerators
-            if(s1.type == Data.NumType.PURE && s2.type == Data.NumType.PURE) {
-                count[3]++;
+            if(s1.type == Data.NumType.PURE && s2.type == Data.NumType.PURE) { //About 0.15% of comparisons
                 return Double.compare(s1.numerator, s2.numerator);
             }
 
             // If both are mixed fractions, compare whole numbers then numerators
-            if(s1.type == Data.NumType.MIXED && s2.type == Data.NumType.MIXED) {
-                count[4]++;
+            if(s1.type == Data.NumType.MIXED && s2.type == Data.NumType.MIXED) { // Usually no comparisons match this
                 int cmp = Double.compare(s1.whole, s2.whole);
                 if(cmp != 0) return cmp;
                 else return Double.compare(s1.numerator, s2.numerator);
             }
 
             // Compare type of number (enum compares based on order) and if different, that comparison is returned
+            // Usually no comparisons
             int typecmp = s1.type.compareTo(s2.type);
             if(typecmp != 0) {
-                count[5]++;
                 return(typecmp);
             }
 
-            // switch(s1.type){ // s1.type==s2.type
-            //     case DECIMAL: // Same value both are decimal expressions they must be equal, usually no comparisons match this
-            //         count[4]++;
-            //         return(0);
-            //     case MIXED: // Mixed fractions, usually no comparisons match this
-            //         count[5]++;
-            //         cmp=(s1.whole).compareTo(s2.whole); // Compare whole numbers, usually no comparisons match this
-            //         if(cmp!=0){return(cmp);} // Sort off whole number
-            //         // NOTE:  There is no return or break in this case.  This is on purpose
-            //     case PURE:                  // Pure fraction or equal whole numbers, About 0.15% of comparisons
-            //         count[6]++;
-            //         return Double.compare(s1.numerator, s2.numerator); // Compare numerators of fraction portion
-            //         //if(cmp!=0){return(cmp);} // Sort off numerator
-            //         //return(0);
-            // }			
             
             System.err.println("DANGER.  Bad input parsed");
             return(0); // This should never be reached
         }
     }
+
     public static class Data {             
         public long numerator;
 
@@ -161,31 +134,30 @@ public class Group7 {
         public double approx; // Approximate double value of the number
         
         public Data(String line){
-            int posSlash=-1; // Assume no slash
-            int posSpace=-1; // No space
 
             exprLine = line;      
 
-            posSlash=exprLine.indexOf("/"); // Find the slash (if any)
+            int posSlash = exprLine.indexOf("/"); // Find the slash (if any)
             if(posSlash!=-1){ // We found a slash so expression is either mixed or pure
-                posSpace=exprLine.indexOf(" "); // Find the space (if any)
+                int posSpace = exprLine.indexOf(" "); // Find the space (if any)
                 if(posSpace!=-1){ // We found a slash *and* a space
-                    type=NumType.MIXED;   // Set to type mixed
-                    whole= Long.parseLong(exprLine.substring(0,posSpace)); // Get everything before the space
-                    numerator= Long.parseLong(exprLine.substring(posSpace+1,posSlash)); // Get everything before the slash and after the space (if any)
+                    type = NumType.MIXED;   // Set to type mixed
+                    whole = Long.parseLong(exprLine.substring(0,posSpace)); // Get everything before the space
+                    numerator = Long.parseLong(exprLine.substring(posSpace+1,posSlash)); // Get everything before the slash and after the space (if any)
                     
                     double den = Double.parseDouble(exprLine.substring(posSlash+1));
 
-                    approx = ((whole * den) + numerator) / den; // Make the approximate (double) value
+                    approx = ((((double) whole) * den) + ((double) numerator)) / den; // Make the approximate (double) value
+
                 } else {         // We found a slash *but* no space
-                    type=NumType.PURE;  //Set to type pure fraction
+                    type = NumType.PURE;  //Set to type pure fraction
                     numerator = Long.parseLong(exprLine.substring(0,posSlash)); // Get everything before the slash
 
                     approx = ((double) numerator) / Double.parseDouble(exprLine.substring(posSlash+1)); // Make the approximate (double) value
                 }
                  
             } else {
-                type=NumType.DECIMAL;  // Set to type Decimal Expression
+                type = NumType.DECIMAL;  // Set to type Decimal Expression
                 approx = Double.parseDouble(exprLine); // Make the approximate (double) value
             }
         } 
