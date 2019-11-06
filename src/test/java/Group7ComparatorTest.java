@@ -109,6 +109,55 @@ public class Group7ComparatorTest {
         assertTrue(compareFracGroup7("4807334027/4829420976","6346791669/6375951545") > 0);
     }
 
+    // Sanity check Group 0 comparator
+    @Test public void testGroup0FracComparator() {
+        assertTrue(compareFracGroup0("3/4","2/3") > 0);
+        assertTrue(compareFracGroup0("2/3","3/4") < 0);
+
+        // Two pure fractions, unequal, one in lowest form
+        assertTrue(compareFracGroup0("3/4","4/6") > 0);
+        assertTrue(compareFracGroup0("4/6","3/4") < 0);
+
+        /// Two pure fractions with equal values
+        assertTrue(compareFracGroup0("3/4","6/8") < 0);
+        assertTrue(compareFracGroup0("6/8","3/4") > 0);
+
+        // One pure fraction and one decimal with equal values
+        assertTrue(compareFracGroup0("7/4","1.75") > 0);
+        assertTrue(compareFracGroup0("1.75","7/4") < 0);
+
+        // One pure fraction and one decimal with unequal values
+        assertTrue(compareFracGroup0("7/4","1.74") > 0);
+        assertTrue(compareFracGroup0("1.74","7/4") < 0);
+
+        // Two unequal decimals
+        assertTrue(compareFracGroup0("1.74","1.75") < 0);
+        assertTrue(compareFracGroup0("1.75","1.74") > 0);
+
+        // One mixed fraction, one decimal with equal values 
+        assertTrue(compareFracGroup0("1 3/4","1.75") > 0);
+        assertTrue(compareFracGroup0("1.75","1 3/4") < 0);
+
+        // Pure fraction to mixed fraction with same value
+        assertTrue(compareFracGroup0("7/4","1 3/4") > 0);
+        assertTrue(compareFracGroup0("1 3/4","7/4") < 0);
+
+        // Mixed fraction to mixed fraction.  Same whole number
+        assertTrue(compareFracGroup0("1 3/4","1 6/8") < 0);
+        assertTrue(compareFracGroup0("1 6/8","1 3/4") > 0);
+
+        // Two mixed factions with equal values
+        assertTrue(compareFracGroup0("1 7/4","2 3/4") < 0);
+        assertTrue(compareFracGroup0("2 3/4","1 7/4") > 0);
+
+        // Mixed fraction to unequal pure fraction
+        assertTrue(compareFracGroup0("1 7/4","13/4") < 0);
+        assertTrue(compareFracGroup0("13/4","1 7/4") > 0);
+
+        assertTrue(compareFracGroup0("6346791669/6375951545","4807334027/4829420976") < 0);
+        assertTrue(compareFracGroup0("4807334027/4829420976","6346791669/6375951545") > 0);
+
+    }
     // @Test public void testFracComparatorNegative1() {
     //     assertTrue(compareFracGroup7("-5394608174567520344/-182296925182177504","9903601889/314275584") > 0);
     //     assertTrue(compareFracGroup7("9903601889/314275584","-5394608174567520344/-182296925182177504") < 0);
