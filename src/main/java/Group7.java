@@ -89,10 +89,10 @@ public class Group7 {
 
             // If it is within a reasonable margin we can assume they are different values 
             // and return the appropriate comparison
-            if(approxDiff < -0.0000000000000001) { // About 50% of comparisons
+            if(approxDiff < -0.00000000000001) { // About 50% of comparisons
                 count[0]++;
                 return -1;
-            } else if (approxDiff > 0.0000000000000001) { // About  50% of comparisons
+            } else if (approxDiff > 0.00000000000001) { // About  50% of comparisons
                 count[1]++;
                 return 1;
             }
@@ -103,37 +103,14 @@ public class Group7 {
                 count[2]++;
                 return 0;
             }
-
-            // probably decimal and non-decimal of equal val
-            //if(s1.type == Data.NumType.DECIMAL || s2.type == Data.NumType.DECIMAL) {
-            //    count[3]++;
-            //    return s1.type.compareTo(s2.type);
-            //}
-            
-
-
-            
-
-            // This is very expensive to do so we avoid it if possible, very few comparisons get to this point
-            // Because of the approximation it became faster to calculate the bigNumerator here instead of for every item
-            // since even 2x the number of comparisons that get to here is a 10x fewer than the number of items
-            //int cmp;
-            //int cmp = (((s1.whole.multiply(s1.denominator)).add(s1.numerator)).multiply(s2.denominator)).compareTo(((s2.whole.multiply(s2.denominator)).add(s2.numerator)).multiply(s1.denominator));  // Compare a/b to c/d by finding ad-bc
-        
-            // This was true for 99.96% of comparisons before approx comparison was added, now very few get to here
-            //if(cmp!=0) { // Nearly never true
-            //    count[4]++;
-           //     return(cmp);
-            //}
-
-
     
-
+            // If both are pure fractions, compare numerators
             if(s1.type == Data.NumType.PURE && s2.type == Data.NumType.PURE) {
                 count[3]++;
                 return Double.compare(s1.numerator, s2.numerator);
             }
 
+            // If both are mixed fractions, compare whole numbers then numerators
             if(s1.type == Data.NumType.MIXED && s2.type == Data.NumType.MIXED) {
                 count[4]++;
                 int cmp = Double.compare(s1.whole, s2.whole);
@@ -148,8 +125,6 @@ public class Group7 {
                 return(typecmp);
             }
 
-            return 0;
-            
             // switch(s1.type){ // s1.type==s2.type
             //     case DECIMAL: // Same value both are decimal expressions they must be equal, usually no comparisons match this
             //         count[4]++;
@@ -165,78 +140,54 @@ public class Group7 {
             //         //if(cmp!=0){return(cmp);} // Sort off numerator
             //         //return(0);
             // }			
-            // System.err.println("DANGER.  Bad input parsed");
-            // return(0); // This should never be reached
+            
+            System.err.println("DANGER.  Bad input parsed");
+            return(0); // This should never be reached
         }
     }
     public static class Data {             
-        public double numerator;    // Arbitrary Precision for Numerator
-        //public BigInteger denominator;  // Arbitrary Precision for Denominator
-        public double whole;        // Arbitrary Prection for whole number (not needed... but makes the Big Integer arithmetic easier)
+        public long numerator;
 
-        //public BigInteger bigNumerator; // The value of all expressions can be internally represented as bigNumerator/denominator
+        public long whole; 
 
         static enum NumType {
             DECIMAL, MIXED, PURE;
         }
 
-        public NumType type = null;             // -1 unspecified, 0 decimal, 1 mixed, 2 pure
+        public NumType type = null; 
         
-        public String exprLine;         // The original string-- useful to outputting at the end.
+        public String exprLine; // The original string, useful for outputting at the end
 
-        public double approx;           // Approximate double value of the number
+        public double approx; // Approximate double value of the number
         
         public Data(String line){
-            int posSlash=-1;       // Assume no slash
-            int posSpace=-1;       // No space
-            //int posDot=-1;         // And no period
-            exprLine = line; // 
-            // NOTE:  If the input is well-formed only one of the following three situations can arise
-            //        to ensure mutual exclusion we could use nested if-else... but I think this is easier to read
-            //        
+            int posSlash=-1; // Assume no slash
+            int posSpace=-1; // No space
 
-            
+            exprLine = line;      
+
             posSlash=exprLine.indexOf("/"); // Find the slash (if any)
             if(posSlash!=-1){ // We found a slash so expression is either mixed or pure
                 posSpace=exprLine.indexOf(" "); // Find the space (if any)
                 if(posSpace!=-1){ // We found a slash *and* a space
                     type=NumType.MIXED;   // Set to type mixed
-                    whole= Double.parseDouble(exprLine.substring(0,posSpace)); // Get everything before the space
-                    numerator= Double.valueOf(exprLine.substring(posSpace+1,posSlash));// Get everything before the slash and after the space (if any)
+                    whole= Long.parseLong(exprLine.substring(0,posSpace)); // Get everything before the space
+                    numerator= Long.parseLong(exprLine.substring(posSpace+1,posSlash)); // Get everything before the slash and after the space (if any)
                     
-                    //denominator=new BigInteger(exprLine.substring(posSlash+1));       // Get everything after the slash
-
                     double den = Double.parseDouble(exprLine.substring(posSlash+1));
 
-                    approx = ((whole * den) + numerator) / den;
+                    approx = ((whole * den) + numerator) / den; // Make the approximate (double) value
                 } else {         // We found a slash *but* no space
                     type=NumType.PURE;  //Set to type pure fraction
-                    numerator = Double.valueOf(exprLine.substring(0,posSlash));// Get everything before the slash
-                    //whole = BigInteger.ZERO; // Not really defined for pure fractions... but simplifies bigNumerator calculation below
-                    //denominator=new BigInteger(exprLine.substring(posSlash+1));
-                    approx = numerator / Double.parseDouble(exprLine.substring(posSlash+1));
+                    numerator = Long.parseLong(exprLine.substring(0,posSlash)); // Get everything before the slash
+
+                    approx = ((double) numerator) / Double.parseDouble(exprLine.substring(posSlash+1)); // Make the approximate (double) value
                 }
-                 // Make the approximate (double) value
+                 
             } else {
-                //posDot=exprLine.indexOf("."); //Find the period (if any)
                 type=NumType.DECIMAL;  // Set to type Decimal Expression
-                approx = Double.parseDouble(exprLine);
-                //whole=new BigInteger(exprLine.substring(0,posDot));              // Get everything before the decimal point
-                //numerator=new BigInteger(exprLine.substring(posDot+1));       // Get everything after the decimal point
-
-                //denominator = BigInteger.TEN.pow(exprLine.length()-posDot-1);		
+                approx = Double.parseDouble(exprLine); // Make the approximate (double) value
             }
-            
-            // We skip making the bigNumerator for every item and calculate it when needed
-            //bigNumerator = (whole.multiply(denominator)).add(numerator);// Make the big numerator
-
-            //double den = denominator.doubleValue();
-
-            //approx = ((whole.doubleValue() * den) + numerator.doubleValue()) / den; // Make the approximate (double) value
-
-        }
-        
-        
-        
+        } 
     }
 }
