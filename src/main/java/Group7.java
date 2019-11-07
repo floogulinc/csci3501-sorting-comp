@@ -72,7 +72,7 @@ public class Group7 {
         public int compare(Data s1, Data s2) {
 
             // Calculate difference in the approximate (double) values of the two numbers
-            // This is much cheaper than the full precision check so we do it first
+            // This is much cheaper than the old check using BigInteger and is precise enough for the given data
 
             double approxDiff = s1.approx - s2.approx;
 
