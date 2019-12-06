@@ -23,7 +23,7 @@
             position: absolute;
             bottom: 3em;
         }
-        li p { line-height: 1.25em; }
+        li { line-height: 1.25em; }
         .red { color: #fa0000; }
         .large { font-size: 2em; }
         a, a > code {
@@ -95,22 +95,39 @@ Paul Friederichsen
 
 ## Second place in the final round
 
+- Sum of medians: 1443.0 ms (just 21 ms more than 1st place)
+
+### First place in the first round
+
+- Sum of medians: 4155.0 ms
+
 ---
 
 # The Algorithm
 
 .pull-left[
 
+## Description
+
 - Optimized version of the original comparator
+- Still using Java's default Timsort
+- No `BigInteger` types in `Data` class
+- Stores `numerator` and `whole` as `long`, no `bigNumerator`
 - Calculates approximate value as a `Double` during `Data` object creation
 - Uses approximate value for quick comparison for values that are definitely different
-  - Threshold of ±0.000000000001
-
-## Efficiency 
+  - Threshold of ±0.00000000000001
 
 
 ]
 .pull-right[
+
+## Efficiency
+- Worst Case
+  - Uses Timsort, which is \\(\mathcal{O}(n\log{}n)\\) worst case
+  - Comparator is very efficient so I would expect the algorithm to have the same efficiency as Timsort
+- Expected
+  - The data we were given is (nearly) completely random and as such is the worst case for Timsort
+  - So this is also the same as the worst case
 
 
 ]
@@ -142,7 +159,7 @@ public static class Data {
     
     public String exprLine; // The original string, useful for outputting at the end
 
-    public double approx; // Approximate double value of the number
+*   public double approx; // Approximate double value of the number
     
     ...
 }
@@ -165,13 +182,13 @@ public Data(String line){
             numerator = Long.parseLong(exprLine.substring(posSpace+1,posSlash));
             double den = Double.parseDouble(exprLine.substring(posSlash+1));
             // Make the approximate (double) value
-            approx = ((((double) whole) * den) + ((double) numerator)) / den; 
+*           approx = ((((double) whole) * den) + ((double) numerator)) / den; 
         } else { // We found a slash *but* no space
             type = NumType.PURE;  //Set to type pure fraction
             // Get everything before the slash
             numerator = Long.parseLong(exprLine.substring(0,posSlash));
             // Make the approximate (double) value
-            approx = ((double) numerator) / Double.parseDouble(exprLine.substring(posSlash+1));
+*           approx = ((double) numerator) / Double.parseDouble(exprLine.substring(posSlash+1));
         }
     } else {
         type = NumType.DECIMAL;  // Set to type Decimal Expression
@@ -190,7 +207,7 @@ public int compare(Data s1, Data s2) {
     // Calculate difference in the approximate (double) values of the two numbers
     // This is much cheaper than the old check using BigInteger and is precise enough for the given data
 
-    double approxDiff = s1.approx - s2.approx;
+*   double approxDiff = s1.approx - s2.approx;
 
     // If it is within a reasonable margin we can assume they are different values 
     // and return the appropriate comparison
@@ -283,6 +300,24 @@ public class Group7SortTest {
 ```
 
 ---
+.pull-left[
+## What worked
+
+- Lots of testing caught errors
+- Removing all uses `BigInteger` saved a lot of time
+- Reordering of compare function based on how many comparisons reached each part of the code
+- Using a profiler to see which methods were taking the most time
+]
+.pull-right[
+## What can be improved
+
+- Using an optimized quicksort (insertion sort at end) instead of Timsort
+  - Timsort is designed for real-world data where there are natural sections of already-sorted data
+  - But it performs like merge sort on completely random data
+  - Quicksort with insertion sort at the end may have performed slightly better on this data
+- There are probably still improvements that can be made to the comparator
+]
+---
 
 class: center, middle, inverse
 
@@ -291,8 +326,8 @@ class: center, middle, inverse
 
 
     </textarea>
-    <script src="https://remarkjs.com/downloads/remark-latest.min.js">
-    </script>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS_HTML&delayStartupUntil=configured" type="text/javascript"></script>
     <script>
         var slideshow = remark.create({
             ratio: '16:9',
@@ -300,6 +335,9 @@ class: center, middle, inverse
             highlightLines: true
             
         });
+
+
+        MathJax.Hub.Configured();
     </script>
 </body>
 </html>
