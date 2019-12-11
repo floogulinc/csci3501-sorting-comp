@@ -1,4 +1,3 @@
-# CSCI 3501 Sorting Competition
 ### Paul Friederichsen (Group 7)
 
 - [Presentation](presentation)
