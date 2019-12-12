@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sorting Competition 2019</title>
+    <meta charset="utf-8">
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+        @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+        @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+        
+        .remark-slide-scaler {
+            top: 0px !important;
+        }
+
+        body {
+            font-family: 'Droid Serif';
+        }
+        h1, h2, h3 {
+            font-family: 'Yanone Kaffeesatz';
+            font-weight: 400;
+            margin-bottom: 0;
+        }
+        .remark-slide-content h1 { font-size: 3em; }
+        .remark-slide-content h2 { font-size: 2em; }
+        .remark-slide-content h3 { font-size: 1.6em; }
+        .footnote {
+            position: absolute;
+            bottom: 3em;
+        }
+        li { line-height: 1.25em; padding-top: 0.25em;}
+        .red { color: #fa0000; }
+        .large { font-size: 2em; }
+        a, a > code {
+            color: rgb(249, 38, 114);
+            text-decoration: none;
+        }
+        code {
+            background: #e7e8e2;
+            border-radius: 5px;
+        }
+        .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+        .remark-code-line-highlighted     { background-color: #373832; }
+        .pull-left {
+            float: left;
+            width: 47%;
+        }
+        .pull-right {
+            float: right;
+            width: 47%;
+        }
+        .pull-right ~ p {
+            clear: both;
+        }
+        #slideshow .slide .content code {
+            font-size: 0.8em;
+        }
+        #slideshow .slide .content pre code {
+            font-size: 0.9em;
+            padding: 15px;
+        }
+        .inverse {
+            background: #272822;
+            color: #777872;
+            text-shadow: 0 0 20px #333;
+        }
+        .inverse h1, .inverse h2 {
+            color: #f3f3f3;
+            line-height: 0.8em;
+        }
+        
+        @page {
+            size: 1210px 681px;
+            margin: 0;
+        }
+        
+        @media print {
+            .remark-slide-scaler {
+                width: 100% !important;
+                height: 100% !important;
+                transform: scale(1) !important;
+                top: 0 !important;
+                left: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <textarea id="source">
+
+
+class: center, middle, inverse
+
+# Sorting Competition 2019
+
+Paul Friederichsen (Group 7)
+
+---
+
+# Results
+
+## Second place in the final round
+
+- Sum of medians: 1443.0 ms (21 ms slower than 1st place)
+
+### First place in the first round
+
+- Sum of medians: 4155.0 ms
+
+---
+
+# The Algorithm
+
+.pull-left[
+
+## Description
+
+- Optimized version of the original comparator
+- Still using Java's default Timsort
+- No `BigInteger` types in `Data` class
+- Stores `numerator` and `whole` as `long`, no `bigNumerator`
+- Calculates approximate value as a `Double` during `Data` object creation
+- Uses approximate value for quick comparison for values that are definitely different
+  - Threshold of ±0.00000000000001
+
+
+]
+.pull-right[
+
+## Efficiency
+- Worst Case
+  - Uses Timsort, which is \\(\mathcal{O}(n\log{}n)\\) worst case
+  - Comparator is very efficient so I would expect the algorithm to have the same efficiency as Timsort
+- Expected
+  - The data we were given is (nearly) completely random and as such is the worst case for Timsort
+  - So this is also the same as the worst case
+
+
+]
+---
+
+## The Algorithm
+
+```java
+public static Data[] sort(String[] toSort) {
+        
+    // Get the array of strings as a stream, map it to the Data class, 
+    // sort it with FracComparator, and put the results into a sorted array
+    return Arrays.stream(toSort).map(Data::new).sorted(new FracComparator()).toArray(Data[]::new);
+
+}
+```
+
+```java
+public static class Data {             
+    public long numerator;
+
+    public long whole; 
+
+    static enum NumType {
+        DECIMAL, MIXED, PURE;
+    }
+
+    public NumType type = null; 
+    
+    public String exprLine; // The original string, useful for outputting at the end
+
+*   public double approx; // Approximate double value of the number
+    
+    ...
+}
+```
+---
+
+## The Algorithm
+
+```java
+public Data(String line){
+    exprLine = line;      
+    int posSlash = exprLine.indexOf("/"); // Find the slash (if any)
+    if(posSlash!=-1){ // We found a slash so expression is either mixed or pure
+        int posSpace = exprLine.indexOf(" "); // Find the space (if any)
+        if(posSpace!=-1){ // We found a slash *and* a space
+            type = NumType.MIXED;   // Set to type mixed
+            // Get everything before the space
+            whole = Long.parseLong(exprLine.substring(0,posSpace)); 
+            // Get everything before the slash and after the space (if any)
+            numerator = Long.parseLong(exprLine.substring(posSpace+1,posSlash));
+            double den = Double.parseDouble(exprLine.substring(posSlash+1));
+            // Make the approximate (double) value
+*           approx = ((((double) whole) * den) + ((double) numerator)) / den; 
+        } else { // We found a slash *but* no space
+            type = NumType.PURE;  //Set to type pure fraction
+            // Get everything before the slash
+            numerator = Long.parseLong(exprLine.substring(0,posSlash));
+            // Make the approximate (double) value
+*           approx = ((double) numerator) / Double.parseDouble(exprLine.substring(posSlash+1));
+        }
+    } else {
+        type = NumType.DECIMAL;  // Set to type Decimal Expression
+        approx = Double.parseDouble(exprLine); // Make the approximate (double) value
+    }
+} 
+```
+
+---
+## The Algorithm
+
+```java
+@Override
+public int compare(Data s1, Data s2) {
+
+    // Calculate difference in the approximate (double) values of the two numbers
+    // This is much cheaper than the old check using BigInteger and is precise enough for the given data
+
+*   double approxDiff = s1.approx - s2.approx;
+
+    // If it is within a reasonable margin we can assume they are different values 
+    // and return the appropriate comparison
+    if(approxDiff < -0.00000000000001) { // About 50% of comparisons
+        return -1;
+    } else if (approxDiff > 0.00000000000001) { // About  50% of comparisons
+        return 1;
+    }
+
+
+    // Catches exactly equal values, mostly decimal
+    if(s1.exprLine.equals(s2.exprLine)) { // About 0.5% of comparisons
+        return 0;
+    }
+
+    ...
+```
+---
+
+## The Algorithm
+
+```java
+    ...
+
+    // We assume that if the approx values were equal and the strings aren't equal, 
+    // they are equal value but different representations, which nearly always is two pure fractions
+
+    // If both are pure fractions, compare numerators
+    if(s1.type == Data.NumType.PURE && s2.type == Data.NumType.PURE) { //About 0.15% of comparisons
+        return Double.compare(s1.numerator, s2.numerator);
+    }
+
+    // If both are mixed fractions, compare whole numbers then numerators
+    if(s1.type == Data.NumType.MIXED && s2.type == Data.NumType.MIXED) { // Usually no comparisons match this
+        int cmp = Double.compare(s1.whole, s2.whole);
+        if(cmp != 0) return cmp;
+        else return Double.compare(s1.numerator, s2.numerator);
+    }
+
+    // Compare type of number (enum compares based on order) and if different, that comparison is returned
+    // Usually no comparisons
+    int typecmp = s1.type.compareTo(s2.type);
+    if(typecmp != 0) {
+        return(typecmp);
+    }
+
+    
+    System.err.println("DANGER.  Bad input parsed");
+    return(0); // This should never be reached
+}
+```
+---
+
+# Testing
+
+[![Actions Status](https://github.com/floogulinc/csci3501-sorting-comp/workflows/Java%20CI/badge.svg)](https://github.com/floogulinc/csci3501-sorting-comp/actions)
+
+<img src="https://i.vgy.me/n910bH.png" style="width:100%">
+
+---
+
+## Testing
+
+```java
+public class Group7SortTest {
+
+    public void testSort(int numElements) {
+        String[] data = DataGenerator2019.generateDataArray(numElements);
+        String[] toSort1 = data.clone();
+        String[] toSort2 = data.clone();
+
+        String[] sorted1 = Arrays.stream(Group0.sort(toSort1)).map(x -> x.exprLine).toArray(String[]::new);
+        String[] sorted2 = Arrays.stream(Group7.sort(toSort2)).map(x -> x.exprLine).toArray(String[]::new);
+
+        assertEquals(numElements, sorted2.length);
+        assertTrue(Arrays.asList(sorted2).containsAll(Arrays.asList(data)));
+        assertArrayEquals(sorted1, sorted2);
+    }
+
+    @RepeatedTest(value = 100, name = RepeatedTest.LONG_DISPLAY_NAME) 
+    public void testSort10000Multi() {
+        testSort(10000);
+    }
+
+    @RepeatedTest(value = 1000, name = RepeatedTest.LONG_DISPLAY_NAME) 
+    public void testSort1000Multi() {
+        testSort(1000);
+    }
+}
+```
+
+---
+
+# Conclusion
+
+.pull-left[
+## What worked
+
+- Lots of testing caught errors
+- Removing all uses `BigInteger` saved a lot of time
+- Reordering of compare function based on how many comparisons reached each part of the code
+- Using a profiler to see which methods were taking the most time
+]
+.pull-right[
+## What can be improved
+
+- Using an optimized quicksort (insertion sort at end) instead of Timsort
+  - Timsort is designed for real-world data where there are natural sections of already-sorted data
+  - But it performs like merge sort on completely random data
+  - Quicksort with insertion sort at the end may have performed slightly better on this data
+- There are probably still improvements that can be made to the comparator
+]
+---
+
+class: center, middle, inverse
+
+# Thanks
+[floogulinc.com/csci3501-sorting-comp](https://floogulinc.com/csci3501-sorting-comp/)
+
+
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS_HTML&delayStartupUntil=configured" type="text/javascript"></script>
+    <script>
+        var slideshow = remark.create({
+            ratio: '21:9',
+            highlightStyle: 'monokai-sublime',
+            highlightLines: true
+            
+        });
+
+
+        MathJax.Hub.Configured();
+    </script>
+</body>
+</html>
